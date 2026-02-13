@@ -1,25 +1,33 @@
-name: Build APK
-
-on:
-  push:
-    branches:
-      - main
+name: Build Jarvis APK
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      # ১. কোড চেকআউট করা
+      - uses: actions/checkout@v2
 
-      - name: Build APK with Buildozer
+      # ২. স্পেস পরিষ্কার করা (যাতে মেমোরি ফুল না হয়)
+      - name: Free Disk Space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      # ৩. রেডিমেড বিল্ডোজার অ্যাকশন ব্যবহার করা (সবচেয়ে নিরাপদ উপায়)
+      - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
         with:
           command: buildozer android debug
+          buildozer_version: master
 
+      # ৪. APK আপলোড করা
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
-          name: apk
+          name: Jarvis-Eternal-APK
           path: bin/*.apk
