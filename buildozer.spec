@@ -15,43 +15,35 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 
 # (str) Application versioning
-version = 3.0.0
+version = 3.5.0
 
 # (list) Application requirements
-# এখানে requests এবং certifi যোগ করা হয়েছে যাতে অনলাইন এপিআই ঠিকঠাক কাজ করে
-requirements = python3,kivy==2.2.1,requests,certifi,urllib3,charset-normalizer,idna
+# গিটহাবের জন্য 'kivy==2.2.1' সরিয়ে শুধু 'kivy' দেওয়া হলো যাতে অটোমেটিক লেটেস্ট ভার্সন নেয়
+requirements = python3,kivy,requests,certifi,urllib3,charset-normalizer,idna,pillow
 
 # (list) Permissions
-# ক্যামেরা, ইন্টারনেট এবং IR Blaster এর জন্য প্রয়োজনীয় পারমিশন
-android.permissions = INTERNET, CAMERA, TRANSMIT_IR, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, RECORD_AUDIO
+# তোমার আগের এবং নতুন সব পারমিশন এখানে আছে
+android.permissions = INTERNET, CAMERA, TRANSMIT_IR, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, RECORD_AUDIO, ACCESS_NETWORK_STATE
 
-# (int) Target Android API, should be as high as possible.
+# (int) Target Android API
 android.api = 33
-
-# (int) Minimum API your APK will support.
 android.minapi = 21
-
-# (str) Android NDK version to use
 android.ndk = 25b
 
 # (bool) Use the custom screen orientation
 orientation = portrait
-
-# (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
 
-# (list) Android architectures to build for
+# (list) Android architectures
 android.archs = arm64-v8a, armeabi-v7a
 
 # (bool) Allow backup
 android.allow_backup = True
 
-# (list) The Android themes to use
+# (list) The Android themes
 android.theme = @android:style/Theme.NoTitleBar.Fullscreen
 
 [buildozer]
-# (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
+# (int) Log level
 log_level = 2
-
-# (int) Display warning if buildozer is run as root (0 = off, 1 = on)
 warn_on_root = 1
