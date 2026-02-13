@@ -6,46 +6,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ১. লেটেস্ট কোড চেকআউট (v4) - ডিপ্রিকেশন এরর ফিক্স করবে
+      # ১. লেটেস্ট কোড চেকআউট (v4)
       - uses: actions/checkout@v4
 
-      # ২. জাভা ১৭ সেটআপ (অ্যান্ড্রয়েড বিল্ডের জন্য বাধ্যতামূলক)
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      # ২. ডিস্ক ক্লিনআপ (যাতে মেমোরি এরর না আসে)
+      - name: Free Disk Space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      # ৩. অটোমেটিক বিল্ডোজার (Docker) - সব সেটআপ এর ভেতরে আছে
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          command: buildozer android debug
+          buildozer_version: master
+          workdir: .
 
-      # ৩. পাইথন সেটআপ
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      # ৪. সিস্টেম ডিপেন্ডেন্সি ইন্সটল (সবচেয়ে গুরুত্বপূর্ণ ধাপ)
-      - name: Install System Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip build-essential git python3 python3-dev \
-            ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
-            libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev \
-            zlib1g-dev libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
-            libffi-dev libssl-dev autoconf libtool pkg-config \
-            libmtdev-dev xclip xsel libncurses5 libncursesw5 libltdl-dev
-
-      # ৫. বিল্ডোজার ইন্সটল
-      - name: Install Buildozer
-        run: |
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.33
-
-      # ৬. APK বিল্ড (লাইসেন্স অটো-একসেপ্ট লজিক সহ)
-      - name: Build APK
-        run: |
-          yes | buildozer android debug
-
-      # ৭. APK আপলোড (v4)
+      # ৪. APK আপলোড (Latest Version)
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
